@@ -421,8 +421,12 @@ class HttpServerService : Service() {
         private fun parseBody(session: IHTTPSession): JSONObject {
             val files = mutableMapOf<String, String>()
             session.parseBody(files)
+
+            // 修复中文乱码：使用UTF-8读取POST数据
             val bodyStr = files["postData"] ?: ""
-            return if (bodyStr.isNotBlank()) JSONObject(bodyStr) else JSONObject()
+            val utf8Str = String(bodyStr.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
+
+            return if (utf8Str.isNotBlank()) JSONObject(utf8Str) else JSONObject()
         }
 
         private fun jsonResponse(
