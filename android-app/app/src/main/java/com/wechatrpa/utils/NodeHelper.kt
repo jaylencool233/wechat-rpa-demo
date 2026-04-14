@@ -207,4 +207,14 @@ object NodeHelper {
                 findByExactText("消息") != null && findByExactText("通讯录") != null
         }
     }
+
+    /**
+     * 获取当前聊天窗口的标题（联系人/群组名称）
+     * @return 聊天标题，如果不在聊天页面则返回null
+     */
+    fun getCurrentChatTitle(): String? {
+        // 企业微信聊天标题在 nlu TextView中
+        val titleNode = findFirstById("com.tencent.wework:id/nlu")
+        return titleNode?.text?.toString()
+    }
 }

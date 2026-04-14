@@ -118,9 +118,24 @@ class WeworkOperator {
 
     /**
      * 搜索并打开与指定联系人/群组的聊天窗口
+     *
+     * 智能检测：如果已在目标聊天窗口，直接返回true，避免不必要的导航
      */
     fun openChat(contactName: String, target: AppTarget = AppTarget.WEWORK): Boolean {
         Log.i(TAG, "搜索联系人/群组: $contactName (${target.label})")
+
+        // 智能检测：检查是否已在目标聊天窗口
+        if (NodeHelper.isInChatPage()) {
+            val currentTitle = NodeHelper.getCurrentChatTitle()
+            if (currentTitle == contactName) {
+                Log.i(TAG, "已在 '$contactName' 聊天窗口，跳过搜索")
+                return true
+            } else {
+                Log.i(TAG, "当前在 '$currentTitle' 聊天窗口，需要切换到 '$contactName'")
+            }
+        }
+
+        // 不在目标聊天窗口，执行搜索流程
         goToMainPage(target)
         Thread.sleep(DELAY_SHORT)
 
