@@ -419,12 +419,20 @@ class HttpServerService : Service() {
         // --- 工具方法 ---
 
         private fun parseBody(session: IHTTPSession): JSONObject {
-            // 修复中文乱码：直接从InputStream读取，使用UTF-8解码
-            val inputStream = session.inputStream
-            val bodyBytes = inputStream.readBytes()
-            val bodyStr = String(bodyBytes, Charsets.UTF_8)
+            val files = mutableMapOf<String, String>()
+            session.parseBody(files)
+            val bodyStr = files["postData"] ?: ""
 
-            return if (bodyStr.isNotBlank()) JSONObject(bodyStr) else JSONObject()
+            // NanoHTTPD的parseBody()使用ISO-8859-1解码
+            // 如果客户端发送的是UTF-8字节，需要重新解码
+            val utf8Str = try {
+                // 尝试将ISO-8859-1字符串转回字节，然后用UTF-8解码
+                String(bodyStr.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
+            } catch (e: Exception) {
+                bodyStr // 如果转换失败，使用原始字符串
+            }
+
+            return if (utf8Str.isNotBlank()) JSONObject(utf8Str) else JSONObject()
         }
 
         private fun jsonResponse(
