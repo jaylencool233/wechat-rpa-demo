@@ -6,7 +6,7 @@ import java.nio.charset.Charset
 
 internal object RequestBodyParser {
     fun parseJsonBody(session: NanoHTTPD.IHTTPSession): JSONObject {
-        val bodyText = readBodyText(session)
+        val bodyText = normalizeBodyText(readBodyText(session))
         return if (bodyText.isBlank()) JSONObject() else JSONObject(bodyText)
     }
 
@@ -47,6 +47,31 @@ internal object RequestBodyParser {
         } catch (_: Exception) {
             bodyBytes.toString(Charsets.UTF_8)
         }
+    }
+
+    internal fun normalizeBodyText(text: String): String {
+        if (text.isBlank()) {
+            return text
+        }
+
+        val repaired = runCatching {
+            String(text.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
+        }.getOrDefault(text)
+
+        return if (readabilityScore(repaired) > readabilityScore(text)) repaired else text
+    }
+
+    private fun readabilityScore(text: String): Int {
+        var score = 0
+        for (ch in text) {
+            score += when {
+                ch in '\u4E00'..'\u9FFF' -> 5
+                ch == '?' || ch == '\uFFFD' -> -8
+                ch.code in 0x80..0xFF -> -1
+                else -> 0
+            }
+        }
+        return score
     }
 
     private fun parseCharset(contentType: String?): Charset? {

@@ -6,6 +6,7 @@ import android.provider.Settings
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import com.wechatrpa.service.BuildFingerprint
 import com.wechatrpa.service.HttpServerService
 import com.wechatrpa.service.RpaAccessibilityService
 import java.util.Timer
@@ -25,6 +26,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var tvAccessibility: TextView
     private lateinit var tvHttpServer: TextView
     private lateinit var tvCurrentApp: TextView
+    private lateinit var tvBuildMarker: TextView
     private lateinit var btnAccessibility: Button
     private lateinit var btnHttpServer: Button
     private var statusTimer: Timer? = null
@@ -64,6 +66,14 @@ class MainActivity : AppCompatActivity() {
                 setTypeface(null, android.graphics.Typeface.BOLD)
                 setPadding(0, 0, 0, 32)
             })
+
+            tvBuildMarker = TextView(context).apply {
+                text = "构建指纹: ${BuildFingerprint.MARKER}"
+                textSize = 14f
+                setPadding(0, 0, 0, 16)
+                setTextColor(android.graphics.Color.DKGRAY)
+            }
+            addView(tvBuildMarker)
 
             // 无障碍服务状态
             tvAccessibility = TextView(context).apply {

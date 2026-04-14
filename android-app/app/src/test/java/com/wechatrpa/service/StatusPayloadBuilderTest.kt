@@ -15,7 +15,7 @@ class StatusPayloadBuilderTest {
             taskQueueSize = 2,
         )
 
-        assertEquals(StatusPayloadBuilder.BUILD_MARKER, payload.getString("build_marker"))
+        assertEquals(BuildFingerprint.MARKER, payload.getString("build_marker"))
         assertTrue(payload.getBoolean("http_server"))
         assertEquals(2, payload.getInt("task_queue_size"))
     }

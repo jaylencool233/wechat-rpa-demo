@@ -113,14 +113,14 @@ class HttpServerService : Service() {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             Notification.Builder(this, CHANNEL_ID)
                 .setContentTitle("WeChat RPA 服务运行中")
-                .setContentText("HTTP API 端口: $PORT")
+                .setContentText("HTTP API 端口: $PORT · ${BuildFingerprint.MARKER}")
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .build()
         } else {
             @Suppress("DEPRECATION")
             Notification.Builder(this)
                 .setContentTitle("WeChat RPA 服务运行中")
-                .setContentText("HTTP API 端口: $PORT")
+                .setContentText("HTTP API 端口: $PORT · ${BuildFingerprint.MARKER}")
                 .setSmallIcon(android.R.drawable.ic_dialog_info)
                 .build()
         }

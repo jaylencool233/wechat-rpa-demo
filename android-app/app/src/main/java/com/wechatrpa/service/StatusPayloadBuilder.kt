@@ -3,7 +3,7 @@ package com.wechatrpa.service
 import org.json.JSONObject
 
 internal object StatusPayloadBuilder {
-    const val BUILD_MARKER = "2026-04-15-status-marker-v1"
+    const val BUILD_MARKER = BuildFingerprint.MARKER
 
     fun build(
         accessibilityEnabled: Boolean,

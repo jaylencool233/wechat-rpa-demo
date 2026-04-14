@@ -11,6 +11,25 @@ import java.io.IOException
 class RequestBodyParserTest {
 
     @Test
+    fun `normalizeBodyText repairs latin1 mojibake json`() {
+        val correctJson = """{"contact":"纪嘉伦","message":"测试消息","app_type":"wework"}"""
+        val mojibakeJson = String(correctJson.toByteArray(Charsets.UTF_8), Charsets.ISO_8859_1)
+
+        val normalized = RequestBodyParser.normalizeBodyText(mojibakeJson)
+
+        assertEquals(correctJson, normalized)
+    }
+
+    @Test
+    fun `normalizeBodyText keeps valid chinese json unchanged`() {
+        val correctJson = """{"contact":"纪嘉伦","message":"测试消息","app_type":"wework"}"""
+
+        val normalized = RequestBodyParser.normalizeBodyText(correctJson)
+
+        assertEquals(correctJson, normalized)
+    }
+
+    @Test
     fun `parseJsonBody reads utf8 json from request stream`() {
         val body = """{"contact":"纪嘉伦","message":"测试消息","app_type":"wework"}"""
         val session = FakeSession(
