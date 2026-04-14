@@ -225,13 +225,12 @@ class HttpServerService : Service() {
 
         private fun handleStatus(): Response {
             val service = RpaAccessibilityService.instance
-            val status = JSONObject().apply {
-                put("accessibility_enabled", service != null)
-                put("current_package", service?.currentPackage ?: "")
-                put("current_class", service?.currentClassName ?: "")
-                put("task_queue_size", taskController.getQueueSize())
-                put("http_server", true)
-            }
+            val status = StatusPayloadBuilder.build(
+                accessibilityEnabled = service != null,
+                currentPackage = service?.currentPackage ?: "",
+                currentClass = service?.currentClassName ?: "",
+                taskQueueSize = taskController.getQueueSize(),
+            )
             return jsonResponse(200, true, "ok", status)
         }
 
