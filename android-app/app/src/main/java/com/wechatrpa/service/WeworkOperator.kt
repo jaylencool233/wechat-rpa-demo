@@ -53,8 +53,8 @@ class WeworkOperator {
         const val CHAT_SEND_BTN = "com.tencent.wework:id/ih2"    // 发送按钮 ✅ Updated 2026-04-14
         const val CHAT_MSG_LIST = "com.tencent.wework:id/auj"    // 消息列表
         const val CHAT_MSG_TEXT = "com.tencent.wework:id/aum"    // 消息文本内容
-        const val CHAT_TITLE = "com.tencent.wework:id/ams"       // 聊天标题（联系人名）
-        const val CHAT_MORE_BTN = "com.tencent.wework:id/amw"    // 聊天页右上角更多按钮
+        const val CHAT_TITLE = "com.tencent.wework:id/nlu"       // 聊天标题（联系人名）✅ Updated 2026-04-14
+        const val CHAT_MORE_BTN = "com.tencent.wework:id/nma"    // 聊天页右上角更多按钮 ✅ Updated 2026-04-14
 
         // --- 群管理 ---
         const val GROUP_MEMBER_ADD = "com.tencent.wework:id/c0g"  // 群成员添加按钮（+号）
