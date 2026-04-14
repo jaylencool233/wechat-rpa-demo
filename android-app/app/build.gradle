@@ -42,4 +42,6 @@ dependencies {
 
     // 工具库（可选，简化开发）
     implementation 'com.blankj:utilcodex:1.31.1'
+
+    testImplementation 'junit:junit:4.13.2'
 }

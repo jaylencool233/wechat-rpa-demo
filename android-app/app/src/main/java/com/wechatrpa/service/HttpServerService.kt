@@ -419,18 +419,7 @@ class HttpServerService : Service() {
         // --- 工具方法 ---
 
         private fun parseBody(session: IHTTPSession): JSONObject {
-            val files = mutableMapOf<String, String>()
-            session.parseBody(files)
-            val bodyStr = files["postData"] ?: ""
-
-            // 简单修复：尝试UTF-8转换，如果失败则使用原字符串
-            val finalStr = try {
-                String(bodyStr.toByteArray(Charsets.ISO_8859_1), Charsets.UTF_8)
-            } catch (e: Exception) {
-                bodyStr
-            }
-
-            return if (finalStr.isNotBlank()) JSONObject(finalStr) else JSONObject()
+            return RequestBodyParser.parseJsonBody(session)
         }
 
         private fun jsonResponse(
