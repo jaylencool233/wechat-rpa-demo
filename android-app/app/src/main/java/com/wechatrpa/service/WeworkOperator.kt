@@ -46,11 +46,11 @@ class WeworkOperator {
         const val TAB_MESSAGE = "com.tencent.wework:id/hn5"      // 底部Tab-消息
         const val TAB_CONTACTS = "com.tencent.wework:id/hn7"     // 底部Tab-通讯录
         const val SEARCH_BTN = "com.tencent.wework:id/hfp"       // 主页搜索按钮
-        const val SEARCH_INPUT = "com.tencent.wework:id/cd7"     // 搜索输入框
+        const val SEARCH_INPUT = "com.tencent.wework:id/lla"     // 搜索输入框 ✅ Updated 2026-04-14
 
         // --- 聊天页 ---
-        const val CHAT_INPUT = "com.tencent.wework:id/b4o"       // 聊天输入框
-        const val CHAT_SEND_BTN = "com.tencent.wework:id/b5d"    // 发送按钮
+        const val CHAT_INPUT = "com.tencent.wework:id/ih6"       // 聊天输入框 ✅ Updated 2026-04-14
+        const val CHAT_SEND_BTN = "com.tencent.wework:id/ih2"    // 发送按钮 ✅ Updated 2026-04-14
         const val CHAT_MSG_LIST = "com.tencent.wework:id/auj"    // 消息列表
         const val CHAT_MSG_TEXT = "com.tencent.wework:id/aum"    // 消息文本内容
         const val CHAT_TITLE = "com.tencent.wework:id/ams"       // 聊天标题（联系人名）
@@ -61,8 +61,9 @@ class WeworkOperator {
         const val GROUP_MEMBER_DEL = "com.tencent.wework:id/c0h"  // 群成员删除按钮（-号）
         const val GROUP_NAME = "com.tencent.wework:id/bz8"        // 群名称
 
-        // 提示：以上ID基于企业微信 4.1.x 版本，不同版本需要重新校准
-        // 使用 dumpUiTree() 方法可以导出当前页面的完整控件树
+        // 提示：以上ID已针对当前企业微信版本进行校准更新
+        // 更新日期：2026-04-14
+        // 校准方法：使用 dumpUiTree() 方法导出当前页面的完整控件树
     }
 
     // ====================================================================
