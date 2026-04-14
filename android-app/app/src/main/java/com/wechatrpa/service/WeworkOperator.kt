@@ -163,9 +163,21 @@ class WeworkOperator {
         // 点击搜索结果
         val resultNode = NodeHelper.scrollAndFindText(contactName, maxScrolls = 3)
         if (resultNode != null) {
-            service?.clickNode(resultNode)
-            Thread.sleep(DELAY_PAGE_LOAD)
-            Log.i(TAG, "已打开与 '$contactName' 的聊天窗口")
+            // 边界1：校验点击返回值
+            val clickSuccess = service?.clickNode(resultNode) ?: false
+            if (!clickSuccess) {
+                Log.e(TAG, "点击搜索结果失败")
+                return false
+            }
+
+            // 边界2：验证确实进入目标聊天页
+            val enteredChat = waitAndVerifyChatPage(contactName)
+            if (!enteredChat) {
+                Log.e(TAG, "未能进入 '$contactName' 聊天窗口")
+                return false
+            }
+
+            Log.i(TAG, "已成功打开与 '$contactName' 的聊天窗口")
             return true
         }
 
@@ -192,11 +204,19 @@ class WeworkOperator {
             return TaskResult("", false, "无法打开与 '$contactName' 的聊天窗口")
         }
 
-        // 微信没有企微的 ID，优先用“第一个输入框 + 发送文案”
+        // 边界3：避免回退到任意EditText（防止把消息写进搜索框）
+        // 只使用已知的聊天输入框ID，失败则直接返回错误
         val inputOk = if (target == AppTarget.WECHAT) {
+            // 微信：优先使用指定ID，失败则尝试第一个输入框（保持原有逻辑）
             NodeHelper.inputToField(message) || NodeHelper.inputToField(message, WeworkIds.CHAT_INPUT)
         } else {
-            NodeHelper.inputToField(message, WeworkIds.CHAT_INPUT) || NodeHelper.inputToField(message)
+            // 企业微信：只使用聊天输入框ID，不再fallback到任意EditText
+            val success = NodeHelper.inputToField(message, WeworkIds.CHAT_INPUT)
+            if (!success) {
+                Log.e(TAG, "消息输入失败：未找到聊天输入框 (CHAT_INPUT: ${WeworkIds.CHAT_INPUT})")
+                return TaskResult("", false, "消息输入失败：未找到聊天输入框，可能未正确进入聊天页面")
+            }
+            true
         }
         if (!inputOk) {
             return TaskResult("", false, "消息输入失败")
@@ -505,6 +525,37 @@ class WeworkOperator {
 
     /** 通讯录页加载后等待时间（毫秒），列表渲染与网络可能较慢 */
     private val DELAY_CONTACTS_LOAD = 5000L
+
+    /**
+     * 等待并验证是否进入目标聊天页面
+     *
+     * @param expectedChatTitle 期望的聊天标题（联系人/群组名称）
+     * @param timeoutMs 超时时间（毫秒），默认5秒
+     * @return 是否成功进入目标聊天页面
+     */
+    private fun waitAndVerifyChatPage(expectedChatTitle: String, timeoutMs: Long = 5000L): Boolean {
+        val startTime = System.currentTimeMillis()
+
+        while (System.currentTimeMillis() - startTime < timeoutMs) {
+            // 检查是否在聊天页面
+            if (!NodeHelper.isInChatPage()) {
+                Thread.sleep(200)
+                continue
+            }
+
+            // 检查聊天标题是否匹配
+            val currentTitle = NodeHelper.getCurrentChatTitle()
+            if (currentTitle == expectedChatTitle) {
+                Log.i(TAG, "验证成功：已进入 '$expectedChatTitle' 聊天窗口")
+                return true
+            }
+
+            Thread.sleep(200)
+        }
+
+        Log.e(TAG, "验证失败：超时未进入 '$expectedChatTitle' 聊天窗口，当前标题: '$currentTitle'")
+        return false
+    }
 
     /**
      * 获取联系人列表（通讯录）
